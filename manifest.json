@@ -1,0 +1,8 @@
+{
+  "domain": "chargepoint_sensor",
+  "name": "Chargepoint Sensor",
+  "documentation": "https://github.com/home-assistant/example-custom-config/tree/master/custom_components/example_sensor/",
+  "dependencies": [],
+  "codeowners": [],
+  "requirements": []
+}
