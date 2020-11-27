@@ -23,8 +23,6 @@ Search for it when you see connection to https://mc-ca.chargepoint.com/map-prod/
 
 I will continue to look forward trying to find ways to obtain those without requiring to install mitmproxy but for now it's the only way
 
-That's all... for now.
-
-Good luck! :)
+That's all... Good luck! :)
 
 Michel
