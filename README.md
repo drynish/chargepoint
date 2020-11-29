@@ -15,7 +15,7 @@ Also, it might be slow activating / deactivating since it's reverse engineered a
 
 The easiest way to install (and ensure you are always running the latest version), first setup [Home Assistant Community Store (HACS)](https://github.com/custom-components/hacs), and then add the "Integration" repository: **drynish/chargepoint**
 
-# Issues ;)
+## Known Issues
 
 My first custom_component for Home Assistant. I've been testing it for two days and it seems to work, however as I'm not totally aware of ChargePoint api. I needed to get some secret passphrase using mitmproxy.
 
