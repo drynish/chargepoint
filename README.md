@@ -1,5 +1,7 @@
-# ChargePoint EV charger integrated in home_assistant #
+# ChargePoint EV Charger Integration for Home Assistant
 
+![beta_badge](https://img.shields.io/badge/maturity-Alpha-red.png)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
 ### Installation
 
@@ -16,7 +18,7 @@ The easiest way to install (and ensure you are always running the latest version
 
 # Issues ;)
 
-My first custom_component for home_assistant. I've been testing it for two days and it seems to work, however as I'm not totally aware of ChargePoint api. I needed to get some secret passphrase using mitmproxy.
+My first custom_component for Home Assistant. I've been testing it for two days and it seems to work, however as I'm not totally aware of ChargePoint api. I needed to get some secret passphrase using mitmproxy.
 
 If you want to use that module, you have to complete the following:
 
@@ -36,3 +38,7 @@ I will continue to look forward trying to find ways to obtain those without requ
 That's all... Good luck! :)
 
 Michel
+
+## See Also
+
+* [ChargePoint HA Support Thread](https://community.home-assistant.io/t/chargepoint-support/65353/7)
