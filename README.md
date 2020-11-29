@@ -40,7 +40,7 @@ Michel
 
 ## Future
 
-This is not yet implemented.
+YAML based Home Assistant configuration not yet implemented.
 
 #### Config Example
 
