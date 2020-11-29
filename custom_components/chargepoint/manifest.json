@@ -1,6 +1,6 @@
 {
   "domain": "chargepoint",
-  "name": "Chargepoint Switch",
+  "name": "ChargePoint EV Charger",
   "documentation": "https://github.com/drynish/chargepoint",
   "dependencies": [],
   "codeowners": [],
