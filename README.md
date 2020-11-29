@@ -3,18 +3,17 @@
 ![beta_badge](https://img.shields.io/badge/maturity-Alpha-red.png)
 [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
 
-### Installation
+## Installation
 
-#### Manual
+### Manual
 
 Clone it in custom_components in your config folder. It should appears as an entity in your config (please it could takes as long as 30 secs before being accessible).
 
 Also, it might be slow activating / deactivating since it's reverse engineered and slow as well on your phone. Please be patient (about 30 secs before the operation is updated). Meaning, if you activate from deactivation state, you will see the "button turning blue" as activated and couples of seconds afterwards going back to grey (deactivated), just wait 30 secs and it will update as blue. The Chargepoint API is slow too.
 
-#### Using Home Assistant Community Store (HACS)
+### Using Home Assistant Community Store (HACS)
 
-The easiest way to install (and ensure you are always running the latest version), first setup
-[Home Assistant Community Store (HACS)](https://github.com/custom-components/hacs), and then add the "Integration" repository: drynish/chargepoint
+The easiest way to install (and ensure you are always running the latest version), first setup [Home Assistant Community Store (HACS)](https://github.com/custom-components/hacs), and then add the "Integration" repository: drynish/chargepoint
 
 # Issues ;)
 
