@@ -13,7 +13,7 @@ Also, it might be slow activating / deactivating since it's reverse engineered a
 
 ### Using Home Assistant Community Store (HACS)
 
-The easiest way to install (and ensure you are always running the latest version), first setup [Home Assistant Community Store (HACS)](https://github.com/custom-components/hacs), and then add the "Integration" repository: drynish/chargepoint
+The easiest way to install (and ensure you are always running the latest version), first setup [Home Assistant Community Store (HACS)](https://github.com/custom-components/hacs), and then add the "Integration" repository: **drynish/chargepoint**
 
 # Issues ;)
 
@@ -37,6 +37,20 @@ I will continue to look forward trying to find ways to obtain those without requ
 That's all... Good luck! :)
 
 Michel
+
+## Future
+
+This is not yet implemented.
+
+#### Config Example
+
+```yaml
+chargepoint:
+  email: your@email.com
+  password: SECRET
+  userid: 0000000
+  secret: 'AAAAAAA'
+```
 
 ## See Also
 
