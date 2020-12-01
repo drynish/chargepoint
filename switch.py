@@ -95,7 +95,7 @@ class ChargePoint(SwitchEntity):
                 await session.close()                       
 
             if data["ackid"] > 0 :
-                self._state = 'off'
+                self._state = 'on'
 
         except Exception as e:
             _LOGGER.debug(str(e))  
@@ -112,7 +112,6 @@ class ChargePoint(SwitchEntity):
 
             if data["ackid"] > 0 :
                 self._state = 'off'
-                # await self.async_update(**kwargs)
         except Exception as e:
             _LOGGER.debug(str(e))    
 
@@ -128,11 +127,19 @@ class ChargePoint(SwitchEntity):
                 await session.close()    
             
                 
-            running_state = data["charging_status"]["current_charging"] == "done" # As funny as it might be, this state is the power off state.
-            if running_state :
-                self._state = 'off'                    
+            
+            
+            self._state = data["charging_status"]["current_charging"]  # As funny as it might be, this state is the power off state.
+
+            if self._state == 'done':
+                self._is_on = 'on'                    
+            elif self._state == 'waiting':
+                self._is_on = 'on' 
+            elif self._state == 'not_charging':
+                self._is_on = 'off'
             else :
-                self._state = 'on' 
+                self._is_on = 'on'
+
             self._name = data["charging_status"]["device_name"]
             # self._unique_id = data["charging_status"]["device_id"]
             self._current_power_w = float(data["charging_status"]["power_kw_display"]) * 1000
