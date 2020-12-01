@@ -29,7 +29,7 @@ class ChargePoint(SwitchEntity):
         self._name = None
         self._current_power_w = None
         self._unique_id = "CPH 25"
-        self._device_class = "switch"
+        self._device_class = "outlet"
 
         try:
             parser = configparser.ConfigParser()
@@ -69,12 +69,8 @@ class ChargePoint(SwitchEntity):
     @property
     def is_on(self):
         """Return if the state is charging"""
-        _LOGGER.debug("IS ON!!")
-        if self._state == 'on':
-            return True
-        else:
-            return False
-        
+        return self._state == 'on'
+       
     @property
     def should_poll(self) -> bool:        
         return True
@@ -82,7 +78,7 @@ class ChargePoint(SwitchEntity):
     async def async_toggle(self):
         _LOGGER.debug("TOGGLE!!")
 
-        if self._state == 'off':
+        if self._is_on == 'off':
             self.turn_on()
         else:
             self.turn_off()
@@ -130,15 +126,16 @@ class ChargePoint(SwitchEntity):
             
             
             self._state = data["charging_status"]["current_charging"]  # As funny as it might be, this state is the power off state.
-
             if self._state == 'done':
-                self._is_on = 'on'                    
+                self._state = 'off'
             elif self._state == 'waiting':
-                self._is_on = 'on' 
+                self._state = 'on'
             elif self._state == 'not_charging':
-                self._is_on = 'off'
+                self._state = 'off'
             else :
-                self._is_on = 'on'
+                self._state = 'on'
+
+            _LOGGER.debug("self._is_on:" + str(self._is_on) + " state: " + str(self._state))
 
             self._name = data["charging_status"]["device_name"]
             # self._unique_id = data["charging_status"]["device_id"]
