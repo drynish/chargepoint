@@ -13,9 +13,11 @@ If you want to use that module, you have to complete the following:
 * Create a pyChargePoint.cfg file like this:
 ```
 [DEFAULT]
-secret = 'AAAAAAA'
+secret = AAAAAAA
 userid = 0000000
 ```
+
+DO NOT PUT apostrophies around secret ... it won't work!!!
 
 The CP-Session-Token is a token sent with each transmission through your phone, so you'll have to proxy your phone to your computer and analyze packets sent when opening chargepoint app. (mitmweb) 
 
