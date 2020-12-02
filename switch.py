@@ -98,9 +98,6 @@ class ChargePoint(SwitchEntity):
         except Exception as e:
             _LOGGER.debug(str(e))  
           
-
-
-
     async def async_turn_off(self):
         _LOGGER.debug("TURNING OFF!!")
         try:          
@@ -125,17 +122,15 @@ class ChargePoint(SwitchEntity):
                 data = await self.api.info(session)                              
                 await session.close()    
             
-            self._state = data["charging_status"]["current_charging"]  # As funny as it might be, this state is the power off state.
-            if self._state == 'done':
+            state = data["charging_status"]["current_charging"]  # As funny as it might be, this state is the power off state.
+            if state == 'done':
                 self._state = 'off'
-            elif self._state == 'waiting':
+            elif state == 'not_charging':
+                self._state = 'off'
+            elif state == 'waiting':
                 self._state = 'on'
-            elif self._state == 'not_charging':
-                self._state = 'off'
             else :
                 self._state = 'on'
-
-            _LOGGER.debug("self._is_on:" + str(self._is_on) + " state: " + str(self._state))
 
             self._name = data["charging_status"]["device_name"]
             # self._unique_id = data["charging_status"]["device_id"]
