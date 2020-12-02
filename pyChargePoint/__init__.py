@@ -1,7 +1,6 @@
-import aiohttp
-import asyncio
 import uuid
 import json
+import requests
 
 class API:
     """API pour se connecter à chargepoint"""
@@ -14,10 +13,10 @@ class API:
         self.api_token = api_token
         self.user_id = user_id
 
-    async def action(self, type, session):
+    async def action(self, type):
         """ type is a string that could be either startsession or stopSession """
 
-        data = await self.info(session)
+        data = await self.info()
 
         url = f"https://account-ca.chargepoint.com/account/v1/driver/station/{type}"
 
@@ -42,13 +41,12 @@ class API:
             "Cookies": f"coulomb_sess={self.api_token}"
         }
 
-        async with session.post(url, json=dataJSON, headers=headers) as resp:
-            result = await resp.json()  
+        stringJSON = json.dumps(dataJSON, indent=None, separators=(',', ':'))
+        result = requests.request("POST", url, data=stringJSON, headers=headers)
+        return result.json()
 
-        return result
 
-
-    async def info(self, session):
+    async def info(self):
         result = ""
 
         url = 'https://mc-ca.chargepoint.com/map-prod/v2'
@@ -75,8 +73,6 @@ class API:
             "Cookies": f"coulomb_sess={self.api_token}"
         }
 
+        result = requests.post(url, json=data, headers=headers)
 
-        async with session.post(url, json=data, headers=headers) as resp:
-            result = await resp.json()        
-        
-        return result
+        return result.json()

@@ -86,11 +86,8 @@ class ChargePoint(SwitchEntity):
     async def async_turn_on(self):
         _LOGGER.debug("TURNING ON!!")
         try:
-            async with aiohttp.ClientSession() as session:        
-                data = await self.api.action("startsession", session)
-                await session.close()                       
-
-            _LOGGER.debug(data)  
+            data = await self.api.action("startsession")
+            _LOGGER.debug(data)
 
             if data["ackid"] > 0 :
                 self._state = 'on'
@@ -101,11 +98,9 @@ class ChargePoint(SwitchEntity):
     async def async_turn_off(self):
         _LOGGER.debug("TURNING OFF!!")
         try:          
-            async with aiohttp.ClientSession() as session:        
-                data = await self.api.action("stopSession", session)
-                await session.close() 
-            
+            data = await self.api.action("stopSession")
             _LOGGER.debug(data)
+
             if data["ackid"] > 0 :
                 self._state = 'off'
         except Exception as e:
@@ -118,10 +113,8 @@ class ChargePoint(SwitchEntity):
         """
         _LOGGER.debug("UPDATE!!")
         try: 
-            async with aiohttp.ClientSession() as session:        
-                data = await self.api.info(session)                              
-                await session.close()    
-            
+            data = await self.api.info()
+                      
             state = data["charging_status"]["current_charging"]  # As funny as it might be, this state is the power off state.
             if state == 'done':
                 self._state = 'off'
