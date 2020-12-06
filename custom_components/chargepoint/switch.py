@@ -32,6 +32,7 @@ class ChargePoint(SwitchEntity):
         self._name = None
         self._current_power_w = None
         self._unique_id = "CPH 25"
+        self._device_class = "outlet"
 
         self._attrs = {
             ATTR_ATTRIBUTION: ATTRIBUTION
@@ -75,10 +76,7 @@ class ChargePoint(SwitchEntity):
     def is_on(self):
         """Return if the state is charging"""
         _LOGGER.debug("IS ON!!")
-        if self._state == 'on':
-            return True
-        else:
-            return False
+        return self._state == 'on'
         
     @property
     def should_poll(self) -> bool:        
@@ -87,7 +85,7 @@ class ChargePoint(SwitchEntity):
     async def async_toggle(self):
         _LOGGER.debug("TOGGLE!!")
 
-        if self._state == 'off':
+        if self._is_on == 'off':
             self.turn_on()
         else:
             self.turn_off()
@@ -128,13 +126,20 @@ class ChargePoint(SwitchEntity):
             async with aiohttp.ClientSession() as session:        
                 data = await self.api.info(session)                              
                 await session.close()
-            
-                
-            running_state = data[CHARGING_STATUS]["current_charging"] == "done" # As funny as it might be, this state is the power off state.
-            if running_state :
-                self._state = 'off'                    
+
+            # As funny as it might be, this state is the power off state.
+            state = data[CHARGING_STATUS]["current_charging"] == "done" 
+            if state == 'done':
+                self._state = 'off'
+            elif state == 'waiting':
+                self._state = 'on'
+            elif state == 'not_charging':
+                self._state = 'off'
             else :
-                self._state = 'on' 
+                self._state = 'on'
+
+            _LOGGER.debug("self._is_on:" + str(self._is_on) + " state: " + str(self._state))
+                
             self._name = data[CHARGING_STATUS]["device_name"]
             # self._unique_id = data["charging_status"]["device_id"]
             self._current_power_w = float(data[CHARGING_STATUS]["power_kw_display"]) * 1000
