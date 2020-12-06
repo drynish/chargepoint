@@ -58,6 +58,10 @@ class ChargePoint(SwitchEntity):
         return self._unique_id
 
     @property
+    def device_class(self) -> str:
+        return self._device_class
+    
+    @property
     def name(self):
         """Return the name of the sensor."""
         return self._name
