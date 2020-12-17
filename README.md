@@ -21,6 +21,8 @@ The easiest way to install (and ensure you are always running the latest version
 chargepoint:
   email: your@email.com
   password: SECRET
+
+  # temporarily this is required (see MITM steps below)
   userid: 0000000
   secret: 'AAAAAAA'
 ```
