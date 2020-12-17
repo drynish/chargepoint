@@ -27,6 +27,7 @@ class ChargePoint(SwitchEntity):
     def __init__(self, **kwargs):
         """Initialize the sensor."""
         _LOGGER.debug("INIT!!")
+
         self._state = None
         self._is_on = False
         self._name = None
@@ -43,14 +44,15 @@ class ChargePoint(SwitchEntity):
 
         try:
             parser = configparser.ConfigParser()
-            parser.read('/config/custom_components/chargepoint/pyChargePoint.cfg')
-                          
-            secret = parser.get("DEFAULT",'secret')
-            userid = int(parser.get("DEFAULT",'userid'))
+            parser.read(
+                '/config/custom_components/chargepoint/pyChargePoint.cfg')
+
+            secret = parser.get("DEFAULT", 'secret')
+            userid = int(parser.get("DEFAULT", 'userid'))
             self.api = API(secret, userid)
 
         except Exception as e:
-            _LOGGER.debug(str(e))                    
+            _LOGGER.debug(str(e))
 
     @property
     def unique_id(self) -> str:
@@ -79,11 +81,10 @@ class ChargePoint(SwitchEntity):
     @property
     def is_on(self):
         """Return if the state is charging"""
-        _LOGGER.debug("IS ON!!")
         return self._state == 'on'
         
     @property
-    def should_poll(self) -> bool:        
+    def should_poll(self) -> bool:
         return True
 
     async def async_toggle(self):
@@ -97,29 +98,30 @@ class ChargePoint(SwitchEntity):
     async def async_turn_on(self):
         _LOGGER.debug("TURNING ON!!")
         try:
-            async with aiohttp.ClientSession() as session:        
+            async with aiohttp.ClientSession() as session:
                 data = await self.api.action("startsession", session)
-                await session.close()                       
+                await session.close()
 
-            if data["ackid"] > 0 :
-                self._state = 'off'
+            _LOGGER.debug(data)
+
+            if data["ackid"] > 0:
+                self._state = 'on'
 
         except Exception as e:
-            _LOGGER.debug(str(e))  
+            _LOGGER.debug(str(e))
 
     async def async_turn_off(self):
         _LOGGER.debug("TURNING OFF!!")
-        try:          
-            async with aiohttp.ClientSession() as session:        
+        try:
+            async with aiohttp.ClientSession() as session:
                 data = await self.api.action("stopSession", session)
-                await session.close() 
+                await session.close()
 
-            if data["ackid"] > 0 :
+            _LOGGER.debug(data)
+            if data["ackid"] > 0:
                 self._state = 'off'
-                # await self.async_update(**kwargs)
         except Exception as e:
-            _LOGGER.debug(str(e))    
-
+            _LOGGER.debug(str(e))
 
     async def async_update(self, **kwargs):
         """Fetch new state data for the sensor.
@@ -132,9 +134,11 @@ class ChargePoint(SwitchEntity):
                 await session.close()
 
             # As funny as it might be, this state is the power off state.
-            state = data[CHARGING_STATUS]["current_charging"] == "done" 
+            state = data[CHARGING_STATUS]["current_charging"]
             if state == 'done':
                 self._state = 'off'
+            elif state == 'fully_charged':
+                self._state = 'on'
             elif state == 'waiting':
                 self._state = 'on'
             elif state == 'not_charging':
@@ -142,12 +146,12 @@ class ChargePoint(SwitchEntity):
             else :
                 self._state = 'on'
 
-            _LOGGER.debug("self._is_on:" + str(self._is_on) + " state: " + str(self._state))
-                
+            _LOGGER.debug(f"self._is_on:{self._is_on} state: {(self._state)}")
+
             self._name = data[CHARGING_STATUS]["device_name"]
             # self._unique_id = data["charging_status"]["device_id"]
             self._current_power_w = float(data[CHARGING_STATUS]["power_kw_display"]) * 1000
-
+            
         except Exception as e:
             _LOGGER.debug(str(e))
 
