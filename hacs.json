@@ -1,0 +1,5 @@
+{
+  "name": "Chargepoint EV Charging",
+  "domains": [ "switch" ],
+  "render_readme": true
+}
