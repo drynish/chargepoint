@@ -1,21 +1,24 @@
-"""Platform for chargepoint integration."""
-from homeassistant.components.switch import SwitchEntity
-from .pyChargePoint import API
+"""Switch for ChargePoint Home Assistant Integration"""
+
+import logging
 
 import configparser
-import subprocess
-import json
-import logging
 import aiohttp
 import asyncio
 
+from homeassistant.components.switch import SwitchEntity
+
+from .const import ATTRIBUTION, ATTR_ATTRIBUTION, DOMAIN, CHARGEPOINT_SERVICE
+from .pyChargePoint import API
 
 _LOGGER = logging.getLogger(__name__)
 
+CHARGING_STATUS = 'charging_status'
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the sensor platform."""
-    add_entities([ChargePoint()])
+
+    add_entities([ ChargePoint() ])
 
 
 class ChargePoint(SwitchEntity):
@@ -23,14 +26,21 @@ class ChargePoint(SwitchEntity):
 
     def __init__(self, **kwargs):
         """Initialize the sensor."""
-
         _LOGGER.debug("INIT!!")
+
         self._state = None
         self._is_on = False
         self._name = None
         self._current_power_w = None
         self._unique_id = "CPH 25"
         self._device_class = "outlet"
+
+        self._attrs = {
+            ATTR_ATTRIBUTION: ATTRIBUTION
+        }
+        
+        # reference to the shared ChargePoint client object
+        self._service = hass.data[CHARGEPOINT_SERVICE]
 
         try:
             parser = configparser.ConfigParser()
@@ -46,12 +56,13 @@ class ChargePoint(SwitchEntity):
 
     @property
     def unique_id(self) -> str:
+        # FIXME: should be something truly unique about the device, like the ChargePoint serial number
         return self._unique_id
 
     @property
     def device_class(self) -> str:
         return self._device_class
-
+    
     @property
     def name(self):
         """Return the name of the sensor."""
@@ -71,7 +82,7 @@ class ChargePoint(SwitchEntity):
     def is_on(self):
         """Return if the state is charging"""
         return self._state == 'on'
-
+        
     @property
     def should_poll(self) -> bool:
         return True
@@ -117,31 +128,35 @@ class ChargePoint(SwitchEntity):
         This is the only method that should fetch new data for Home Assistant.
         """
         _LOGGER.debug("UPDATE!!")
-        try:
-            async with aiohttp.ClientSession() as session:
-                data = await self.api.info(session)
+        try: 
+            async with aiohttp.ClientSession() as session:        
+                data = await self.api.info(session)                              
                 await session.close()
 
             # As funny as it might be, this state is the power off state.
-            self._state = data["charging_status"]["current_charging"]
-            if self._state == 'done':
+            state = data[CHARGING_STATUS]["current_charging"]
+            if state == 'done':
                 self._state = 'off'
-            elif self._state == 'fully_charged':
+            elif state == 'fully_charged':
                 self._state = 'on'
-            elif self._state == 'waiting':
+            elif state == 'waiting':
                 self._state = 'on'
-            elif self._state == 'not_charging':
+            elif state == 'not_charging':
                 self._state = 'off'
-            else:
+            else :
                 self._state = 'on'
 
-            _LOGGER.debug("self._is_on:" + str(self._is_on) +
-                          " state: " + str(self._state))
+            _LOGGER.debug(f"self._is_on:{self._is_on} state: {(self._state)}")
 
-            self._name = data["charging_status"]["device_name"]
+            self._name = data[CHARGING_STATUS]["device_name"]
             # self._unique_id = data["charging_status"]["device_id"]
-            self._current_power_w = float(
-                data["charging_status"]["power_kw_display"]) * 1000
-
+            self._current_power_w = float(data[CHARGING_STATUS]["power_kw_display"]) * 1000
+            
         except Exception as e:
             _LOGGER.debug(str(e))
+
+        
+    @property
+    def device_state_attributes(self):
+        """Return the attributes."""
+        return self._attrs
