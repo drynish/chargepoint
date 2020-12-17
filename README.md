@@ -9,7 +9,7 @@
 
 Clone it in custom_components in your config folder. It should appears as an entity in your config (please it could takes as long as 30 secs before being accessible).
 
-Also, it might be slow activating / deactivating since it's reverse engineered and slow as well on your phone. Please be patient (about 30 secs before the operation is updated). Meaning, if you activate from deactivation state, you will see the "button turning blue" as activated and couples of seconds afterwards going back to grey (deactivated), just wait 30 secs and it will update as blue. The Chargepoint API is slow too.
+Also, it might be slow activating / deactivating since it's reverse engineered and slow as well on your phone. Please be patient (about 30 secs before the operation is updated). Meaning, if you activate from deactivation state, you will see the "button turning blue" as activated and couples of seconds afterwards going back to grey (deactivated), just wait 30 secs and it will update as blue. The ChargePoint API is slow too.
 
 ### Using Home Assistant Community Store (HACS)
 
