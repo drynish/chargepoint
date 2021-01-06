@@ -47,7 +47,7 @@ def setup(hass, config):
     except Exception as e:
         LOG.error("Failed connecting to ChargePoint service %s", str(e))
         return False
-   
+
     # configure and initialize all the integrations for ChargePoint devices
     #  ... each component shares the hass.data[CHARGEPOINT_DOMAIN] service object
     for platform in SUPPORTED_PLATFORMS:
