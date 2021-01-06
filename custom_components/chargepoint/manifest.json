@@ -2,7 +2,8 @@
   "domain": "chargepoint",
   "name": "ChargePoint EV Charger",
   "documentation": "https://github.com/drynish/chargepoint",
+  "issue_tracker": "https://github.com/drynish/chargepoint/issues",
   "dependencies": [],
-  "codeowners": [],
+  "codeowners": [ "drynish" ],
   "requirements": []
 }
