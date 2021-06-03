@@ -1,12 +1,11 @@
 """Switch for ChargePoint Home Assistant Integration"""
 
 import logging
-
-import configparser
 import aiohttp
 import asyncio
 
 from homeassistant.components.switch import SwitchEntity
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import ATTRIBUTION, ATTR_ATTRIBUTION, DOMAIN, CHARGEPOINT_SERVICE
 from .pyChargePoint import API
@@ -17,14 +16,13 @@ CHARGING_STATUS = 'charging_status'
 
 def setup_platform(hass, config, add_entities, discovery_info=None):
     """Set up the sensor platform."""
-
-    add_entities([ ChargePoint() ])
+    add_entities([ ChargePoint(hass.data[CHARGEPOINT_SERVICE]) ])
 
 
 class ChargePoint(SwitchEntity):
     """Representation of the charging state of the car."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, api ):
         """Initialize the sensor."""
         _LOGGER.debug("INIT!!")
 
@@ -39,20 +37,16 @@ class ChargePoint(SwitchEntity):
             ATTR_ATTRIBUTION: ATTRIBUTION
         }
         
-        # reference to the shared ChargePoint client object
-        self._service = hass.data[CHARGEPOINT_SERVICE]
+        # reference to the shared ChargePoint client object       
+        self._service = api
 
-        try:
-            parser = configparser.ConfigParser()
-            parser.read(
-                '/config/custom_components/chargepoint/pyChargePoint.cfg')
+        #    parser = configparser.ConfigParser()
+        #    parser.read(
+        #        '/config/custom_components/chargepoint/pyChargePoint.cfg')
 
-            secret = parser.get("DEFAULT", 'secret')
-            userid = int(parser.get("DEFAULT", 'userid'))
-            self.api = API(secret, userid)
-
-        except Exception as e:
-            _LOGGER.debug(str(e))
+        #    secret = parser.get("DEFAULT", 'secret')
+        #    userid = int(parser.get("DEFAULT", 'userid'))
+        #    self.api = API(secret, userid)
 
     @property
     def unique_id(self) -> str:
@@ -99,7 +93,7 @@ class ChargePoint(SwitchEntity):
         _LOGGER.debug("TURNING ON!!")
         try:
             async with aiohttp.ClientSession() as session:
-                data = await self.api.action("startsession", session)
+                data = await self._service.action("startsession", session)
                 await session.close()
 
             _LOGGER.debug(data)
@@ -114,7 +108,7 @@ class ChargePoint(SwitchEntity):
         _LOGGER.debug("TURNING OFF!!")
         try:
             async with aiohttp.ClientSession() as session:
-                data = await self.api.action("stopSession", session)
+                data = await self._service.action("stopSession", session)
                 await session.close()
 
             _LOGGER.debug(data)
@@ -129,12 +123,16 @@ class ChargePoint(SwitchEntity):
         """
         _LOGGER.debug("UPDATE!!")
         try: 
-            async with aiohttp.ClientSession() as session:        
-                data = await self.api.info(session)                              
+            async with aiohttp.ClientSession() as session:
+                data = await self._service.info(session)
                 await session.close()
 
-            # As funny as it might be, this state is the power off state.
+            _LOGGER.debug(data)
+
             state = data[CHARGING_STATUS]["current_charging"]
+
+            _LOGGER.debug(f"state:{state}")
+
             if state == 'done':
                 self._state = 'off'
             elif state == 'fully_charged':
@@ -149,7 +147,7 @@ class ChargePoint(SwitchEntity):
             _LOGGER.debug(f"self._is_on:{self._is_on} state: {(self._state)}")
 
             self._name = data[CHARGING_STATUS]["device_name"]
-            # self._unique_id = data["charging_status"]["device_id"]
+            self._unique_id = data["charging_status"]["device_id"]
             self._current_power_w = float(data[CHARGING_STATUS]["power_kw_display"]) * 1000
             
         except Exception as e:
