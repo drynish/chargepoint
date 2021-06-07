@@ -11,7 +11,7 @@ from .pyChargePoint import API
 
 from .const import CHARGEPOINT_DOMAIN, CHARGEPOINT_SERVICE
 
-LOG = logging.getLogger(__name__)
+_LOGGER = logging.getLogger(__name__)
 
 # FIXME: temporary until username/password authentication works
 CONF_SECRET = 'secret'
@@ -40,10 +40,10 @@ def setup(hass, config):
 
     # initialize the ChargePoint service client
     try:
-        #username = conf.get(CONF_USERNAME)
-        #password = conf.get(CONF_PASSWORD)
-        
-        hass.data[CHARGEPOINT_SERVICE] = API( conf.get(CONF_SECRET), conf.get(CONF_USERID))
+        userid = conf.get(CONF_USERID)
+        secret = conf.get(CONF_SECRET)
+        _LOGGER.debug(f"secret: {secret} userid: {userid}")
+        hass.data[CHARGEPOINT_SERVICE] = API( secret, int(userid))
     except Exception as e:
         LOG.error("Failed connecting to ChargePoint service %s", str(e))
         return False

@@ -1,7 +1,7 @@
 from homeassistant.const import (TIME_MINUTES, ENERGY_KILO_WATT_HOUR)
 
+DOMAIN = 'chargepoint'
 CHARGEPOINT_DOMAIN = 'chargepoint'
-
 CHARGEPOINT_SERVICE = 'chargepoint_svc'
 
 ATTRIBUTION = "Data by Chargepoint"

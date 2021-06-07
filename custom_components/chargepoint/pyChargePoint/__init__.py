@@ -2,6 +2,7 @@ import aiohttp
 import asyncio
 import uuid
 
+
 class API:
     """API pour se connecter à chargepoint"""
 
@@ -15,7 +16,7 @@ class API:
         self.user_id = user_id
 
     async def action(self, type, session):
-        """ type can be startsession / stopSession """
+        """ type should be a string: startsession or stopSession """
 
         data = await self.info(session)
 
@@ -41,10 +42,9 @@ class API:
         }
 
         async with session.post(url, json=data, headers=headers) as resp:
-            result = await resp.json()  
+            result = await resp.json()
 
         return result
-
 
     async def info(self, session):
         result = ""
@@ -59,8 +59,8 @@ class API:
                 "udid": self.uuid,
                 "version": "5.73.0"
             },
-            "charging_status":{
-                "mfhs":{}
+            "charging_status": {
+                "mfhs": {}
             },
             "user_id": self.user_id
         }
@@ -71,8 +71,7 @@ class API:
             "Cookies": f"coulomb_sess={self.api_token}"
         }
 
-
         async with session.post(url, json=data, headers=headers) as resp:
-            result = await resp.json()        
-        
+            result = await resp.json()
+
         return result
