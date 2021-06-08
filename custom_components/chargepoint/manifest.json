@@ -5,7 +5,7 @@
   "documentation": "https://github.com/drynish/chargepoint",
   "issue_tracker": "https://github.com/drynish/chargepoint/issues",
   "dependencies": [],
-  "codeowners": [ "drynish" ],
+  "codeowners": [ "@drynish" ],
   "requirements": [],
   "iot_class": "cloud_polling"
 }
