@@ -4,8 +4,8 @@ DOMAIN = 'chargepoint'
 CHARGEPOINT_DOMAIN = 'chargepoint'
 CHARGEPOINT_SERVICE = 'chargepoint_svc'
 
-ATTRIBUTION = "Data provided by Chargepoint"
-ATTR_ATTRIBUTION = 'attribute'
+ATTRIBUTION = "Data by Chargepoint"
+ATTR_ATTRIBUTION = 'attribution'
 
 ICON_SENSOR = "mdi:ev-station"
 ICON_SWITCH = "mdi:battery-charging"
